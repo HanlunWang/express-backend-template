@@ -1,5 +1,8 @@
 import express from 'express';
 import authRoutes from './authRoutes';
+import productRoutes from './productRoutes';
+import helloRoutes from './helloRoutes';
+import exampleRoutes from './exampleRoutes';
 
 const router = express.Router();
 
@@ -26,4 +29,13 @@ router.get('/health', (req, res) => {
 // Auth routes
 router.use('/auth', authRoutes);
 
-export default router; 
+// Product routes
+router.use('/products', productRoutes);
+
+// Hello World example routes
+router.use('/hello', helloRoutes);
+
+// Database example routes
+router.use('/examples', exampleRoutes);
+
+export default router;
