@@ -29,7 +29,7 @@ A robust Express.js backend template, featuring authentication, automatic API do
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/express-backend-template.git
+git clone https://github.com/HanlunWang/express-backend-template.git
 cd express-backend-template
 ```
 
