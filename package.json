@@ -11,7 +11,13 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "docker:build": "docker build -t express-backend-template .",
-    "docker:run": "docker run -p 3000:3000 express-backend-template"
+    "docker:run": "docker run -p 3000:3000 express-backend-template",
+    "docker:dev": "docker-compose up app-dev",
+    "docker:prod": "docker-compose up app-prod",
+    "docker:dev:build": "docker-compose build app-dev",
+    "docker:prod:build": "docker-compose build app-prod",
+    "docker:stop": "docker-compose down",
+    "docker:clean": "docker-compose down -v"
   },
   "keywords": [
     "express",
@@ -44,7 +50,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
-    "@types/jsonwebtoken": "^9.0.5",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.5",
     "@types/supertest": "^2.0.16",

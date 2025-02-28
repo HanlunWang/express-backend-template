@@ -1,25 +1,38 @@
-FROM node:18-alpine as builder
+FROM node:18-alpine as base
 
+# Create app directory
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
 
-RUN npm ci
-
+# Install dependencies for development and production
+FROM base as development
+RUN npm install
 COPY . .
+CMD ["npm", "run", "dev"]
 
+# Build for production
+FROM base as builder
+RUN npm ci
+COPY . .
 RUN npm run build
 
-FROM node:18-alpine
-
+# Production image
+FROM node:18-alpine as production
 WORKDIR /app
 
+# Copy package files and install only production dependencies
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
-
 RUN npm ci --only=production
 
-# Environment variables
+# Copy built application
+COPY --from=builder /app/dist ./dist
+
+# Copy necessary files for production
+COPY --from=builder /app/.env* ./
+
+# Environment variables with defaults
 ENV NODE_ENV=production
 ENV PORT=3000
 

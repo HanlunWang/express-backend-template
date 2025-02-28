@@ -8,7 +8,7 @@ A robust Express.js backend template, featuring authentication, automatic API do
 - **Authentication System** - JWT-based authentication with role-based access control
 - **API Documentation** - Automatic Swagger documentation
 - **Environment Configuration** - Development, testing, and production environment separation
-- **Docker Support** - Easy containerization for development and production
+- **Docker Support** - Multi-stage Docker builds for development and production
 - **AWS Deployment** - CloudFormation template for AWS ECS Fargate deployment
 - **Testing** - Jest setup for unit and integration testing
 - **Logging** - Structured logging with Winston
@@ -62,21 +62,44 @@ npm run build
 npm start
 ```
 
-#### Using Docker
+### Docker Setup
+
+This project uses a multi-stage Docker build to optimize both development and production environments.
+
+#### Docker Commands
 
 ```bash
-# Build the Docker image
-npm run docker:build
+# Development mode with hot-reloading
+npm run docker:dev
 
-# Run the Docker container
-npm run docker:run
+# Production mode
+npm run docker:prod
+
+# Build development image
+npm run docker:dev:build
+
+# Build production image
+npm run docker:prod:build
+
+# Stop all containers
+npm run docker:stop
+
+# Stop and remove containers, networks, and volumes
+npm run docker:clean
 ```
 
-#### Using Docker Compose
+#### Docker Environment Configuration
 
-```bash
-docker-compose up
-```
+The Docker setup ensures consistent environments between development and production:
+
+- **Development**: Uses nodemon for hot-reloading, mounts the source code as a volume
+- **Production**: Uses the compiled JavaScript code, optimized for performance
+
+#### Docker Compose Services
+
+- **app-dev**: Development environment with hot-reloading
+- **app-prod**: Production environment with optimized settings
+- **mongo**: MongoDB database service
 
 ## API Documentation
 
@@ -106,7 +129,8 @@ http://localhost:3000/api-docs
 ├── .eslintrc.js              # ESLint configuration
 ├── .prettierrc               # Prettier configuration
 ├── docker-compose.yml        # Docker Compose configuration
-├── Dockerfile                # Docker configuration
+├── Dockerfile                # Multi-stage Docker configuration
+├── .dockerignore             # Files to exclude from Docker build
 ├── jest.config.js            # Jest configuration
 ├── package.json              # Project dependencies
 ├── tsconfig.json             # TypeScript configuration
@@ -124,6 +148,22 @@ npm test -- --coverage
 ```
 
 ## Deployment
+
+### Docker Deployment
+
+For production deployment using Docker:
+
+1. Build the production image:
+
+```bash
+npm run docker:prod:build
+```
+
+2. Run the production container:
+
+```bash
+npm run docker:prod
+```
 
 ### AWS Deployment
 
@@ -148,6 +188,15 @@ aws cloudformation deploy \
     JwtSecret=your-jwt-secret \
   --capabilities CAPABILITY_IAM
 ```
+
+## Environment Consistency
+
+This project is designed to ensure consistency between development and production environments:
+
+1. **Docker Multi-stage Builds**: The Dockerfile uses multi-stage builds to create optimized images for both development and production.
+2. **Environment Variables**: Environment variables are managed consistently across all environments.
+3. **Volume Mounting**: In development, source code is mounted as a volume for hot-reloading.
+4. **Dependency Management**: Dependencies are installed consistently in all environments.
 
 ## License
 

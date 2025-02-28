@@ -1,10 +1,12 @@
 version: '3.8'
 
 services:
-  app:
+  # Development service
+  app-dev:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: development
     ports:
       - '3000:3000'
     environment:
@@ -13,17 +15,44 @@ services:
       - MONGODB_URI=mongodb://mongo:27017/express-backend
       - JWT_SECRET=your_jwt_secret_key_change_in_production
       - JWT_EXPIRATION=1d
+      - LOG_LEVEL=debug
+      - CORS_ORIGIN=*
     volumes:
-      - ./src:/app/src
+      - ./:/app
+      - /app/node_modules
     depends_on:
       - mongo
+    command: npm run dev
+    restart: unless-stopped
 
+  # Production service
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/express-backend
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=1d
+      - LOG_LEVEL=info
+      - CORS_ORIGIN=${CORS_ORIGIN}
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  # MongoDB service
   mongo:
     image: mongo:latest
     ports:
       - '27017:27017'
     volumes:
       - mongo-data:/data/db
+    restart: unless-stopped
 
 volumes:
   mongo-data:
